@@ -27,6 +27,7 @@ class MyController {
 	@PostMapping("/api/{id}")
 	public void receive(@PathVariable String id, @RequestBody String body) {
 		log.info("received {}, {}", id, body);
+		if (Integer.parseInt(id) % 2 == 0) { throw new RuntimeException("Not accepting even IDs"); }
 	}
 
 }
