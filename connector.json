@@ -1,9 +1,11 @@
 {
   "name": "http-sink-sample",
   "config": {
-    "connector.class": "io.confluent.samples.HttpSinkConnector.class",
-    "target.topic": "input-topic",
-    "rest.url": "http://localhost:8080/",
+    "connector.class": "io.confluent.samples.httpsink.HttpSinkConnector",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "topics": "input-topic",
+    "http.url": "http://localhost:8080/api",
     "tasks.max": "1"
   }
 }

@@ -16,46 +16,50 @@ import java.util.Properties;
 @Slf4j
 public class HttpSinkTask extends SinkTask {
 
-  Properties props = new Properties();
-  private boolean waitPoll = false;
+    Properties props = new Properties();
 
-  public HttpSinkTask() {
-    RestClient restClient = new RestClient();
-  }
+    @Override
+    public String version() {
+        return "1.0";
+    }
 
-  @Override
-  public String version() {
-    return "1.0";
-  }
+    @Override
+    public void start(Map<String, String> map) {
+        props.putAll(map);
+    }
 
-  @Override
-  public void start(Map<String, String> map) {
-    props.putAll(map);
-  }
+    @Override
+    public void put(Collection<SinkRecord> collection) {
+        log.info("Received a collection of records of size {}", collection.size());
+        for (SinkRecord record : collection) {
+            log.info("Processing records {}", record.toString());
+            callRestService(record);
+        }
+    }
 
-  @Override
-  public void put(Collection<SinkRecord> collection) {
-    for (SinkRecord record : collection) {
-      try {
-        URL url = new URL("http://www.example.com/customers");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setDoOutput(true);
-        connection.setInstanceFollowRedirects(false);
-        connection.setRequestMethod("PUT");
-        connection.setRequestProperty("Content-Type", "application/xml");
+    private void callRestService(SinkRecord record) {
+        try {
+            URL url = new URL(props.getProperty("http.url") + "/" + record.key());
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoOutput(true);
+            connection.setInstanceFollowRedirects(false);
+            connection.setRequestMethod("POST");
 
-        OutputStream os = connection.getOutputStream();
-        os.write("foo".getBytes(StandardCharsets.UTF_8));
-        os.flush();
+            OutputStream os = connection.getOutputStream();
+            os.write(((String) record.value()).getBytes(StandardCharsets.UTF_8));
+            os.flush();
 
-        connection.getResponseCode();
-        connection.disconnect();
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-      }
-    } @Override
-  public void stop() {
-  }
+            log.info("Response: {}", connection.getResponseCode());
+            connection.disconnect();
+        } catch (Exception e) {
+            log.info(e.toString());
+            log.info(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void stop() {
+    }
 
 }
