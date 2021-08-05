@@ -6,7 +6,10 @@
     "key.converter": "org.apache.kafka.connect.storage.StringConverter",
     "topics": "input-topic",
     "http.url": "http://localhost:8080/api",
-    "tasks.max": "1"
+    "tasks.max": "1",
+    "errors.tolerance": "all",
+    "errors.deadletterqueue.topic.name": "http-sink-dlt",
+    "errors.deadletterqueue.topic.replication.factor": 1
   }
 }
 
