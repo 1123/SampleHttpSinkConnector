@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class HttpSinkConnector extends SourceConnector {
 
   public static final String HTTP_URL = "http.url";
