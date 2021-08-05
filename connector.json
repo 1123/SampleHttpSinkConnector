@@ -1,0 +1,11 @@
+{
+  "name": "http-sink-sample",
+  "config": {
+    "connector.class": "io.confluent.samples.HttpSinkConnector.class",
+    "target.topic": "input-topic",
+    "rest.url": "http://localhost:8080/",
+    "tasks.max": "1"
+  }
+}
+
+
